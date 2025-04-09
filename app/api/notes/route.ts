@@ -1,14 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-interface Note {
-  id: string
-  title: string
-  content: string
-  creationDate: string
-  expirationDate: string
-}
-
 export const mapNoteFields = (note: any) => ({
   ...note,
   createdAt: note.creationDate,
@@ -37,9 +29,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(notes.map(mapNoteFields));
 
   } catch (error) {
-    console.error('Connection error:', error);
     return NextResponse.json(
-      { error: 'Failed to connect to backend' }, 
+      { error: 'Failed to connect to backend' },
       { status: 502 }
     );
   }
@@ -62,7 +53,8 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         ...note,
         creationDate: note.createdAt,
-        expirationDate: note.updatedAt
+        expirationDate: note.updatedAt,
+        ttl: note.ttl
       })
     })
 
@@ -76,7 +68,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Connection error:', error);
     return NextResponse.json(
-      { error: 'Failed to connect to backend' }, 
+      { error: 'Failed to connect to backend' },
       { status: 502 }
     );
   }

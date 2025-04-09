@@ -48,11 +48,12 @@ export function Notes({ authExpired }: NotesProps) {
         return notes.find((note) => note.id === selectedNoteId) || null;
     }, [notes, selectedNoteId]);
 
-    const handleAddNote = async () => {
+    const handleAddNote = async (ttl?: number) => {
         try {
             const newNote = await createNote({
                 title: "New Note",
-                content: ""
+                content: "",
+                ttl: ttl || undefined
             });
 
             setNotes([{

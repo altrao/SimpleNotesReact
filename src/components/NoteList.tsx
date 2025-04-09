@@ -1,7 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Plus, Trash } from "lucide-react";
+import { Plus, Trash, Clock } from "lucide-react";
+import { useState } from "react";
+import { TemporaryNoteModal } from "./TemporaryNoteModal";
 import { cn } from "../lib/utils";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
@@ -13,7 +15,7 @@ interface NoteListProps {
   selectedNoteId: string | null;
   onSelectNote: (id: string) => void;
   onDeleteNote: (id: string) => void;
-  onAddNote: () => void;
+  onAddNote: (ttl?: number) => void;
 }
 
 export function NoteList({
@@ -23,19 +25,46 @@ export function NoteList({
   onDeleteNote,
   onAddNote,
 }: NoteListProps) {
+  const [showTempNoteModal, setShowTempNoteModal] = useState(false);
+
   return (
-    <div className="w-full md:w-64 h-full flex flex-col border-r border-border">
+    <>
+      <TemporaryNoteModal
+        open={showTempNoteModal}
+        onOpenChange={setShowTempNoteModal}
+        onSubmit={(ttl) => onAddNote(ttl)}
+      />
+      <div className="w-full md:w-64 h-full flex flex-col border-r border-border">
       <div className="p-4 flex items-center justify-between">
         <h2 className="text-lg font-medium">Notes</h2>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onAddNote}
-          className="h-8 w-12"
-        >
-          <Plus className="h-8 w-8" />
-          <span className="sr-only">Add note</span>
-        </Button>
+        <div className="flex gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setShowTempNoteModal(true);
+            }}
+            className="h-8 w-11"
+          >
+            <Clock className="h-8 w-8" />
+            <span className="sr-only">Create temporary note</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onAddNote();
+            }}
+            className="h-8 w-12"
+          >
+            <Plus className="h-8 w-8" />
+            <span className="sr-only">Add note</span>
+          </Button>
+        </div>
       </div>
       <Separator />
 
@@ -86,5 +115,6 @@ export function NoteList({
         )}
       </div>
     </div>
+    </>
   );
 }

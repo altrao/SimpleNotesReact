@@ -7,6 +7,7 @@ export interface Note {
   content: string;
   createdAt: string;
   updatedAt: string;
+  ttl?: number;
 }
 
 const handleRequest = async (endpoint: string, options: RequestInit, retry = true) => {
@@ -70,7 +71,7 @@ export const deleteNote = async (id: string): Promise<void> => {
   });
 };
 
-export const createNote = async (note: { title: string; content: string }): Promise<Note> => {
+export const createNote = async (note: { title: string; content: string, ttl?: number }): Promise<Note> => {
   const response = await handleRequest('', {
     method: 'POST',
     headers: {
