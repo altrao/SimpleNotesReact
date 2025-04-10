@@ -4,7 +4,7 @@ export async function POST(request: NextRequest) {
     try {
         const { token } = await request.json();
 
-        const res = await fetch('http://localhost:8080/api/auth/refresh', {
+        const res = await fetch(`${process.env.HOST_ADDRESS}/api/auth/refresh`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

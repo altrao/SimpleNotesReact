@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-        const res = await fetch('http://localhost:8080/api/logout', {
+        const res = await fetch(`${process.env.HOST_ADDRESS}/api/logout`, {
             headers: {
                 'Authorization': authHeader
             }

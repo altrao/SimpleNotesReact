@@ -1,15 +1,20 @@
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-  
+import { createContext, useContext, useEffect, useState } from 'react';
+
 const ThemeContext = createContext({
   theme: 'light',
-  setTheme: (theme: string) => {},
+  setTheme: (theme: string) => { },
   resolvedTheme: 'light',
 });
 
 export const useTheme = () => useContext(ThemeContext);
 
-export const ThemeProvider = ({ children, defaultTheme = 'light', enableSystem = false }) => {
+interface ThemeProviderProps {
+  children: any,
+  defaultTheme: string
+}
+
+export const ThemeProvider = ({ children, defaultTheme = 'light' }: ThemeProviderProps) => {
   const [theme, setTheme] = useState(defaultTheme);
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { configDotenv } from "dotenv";
 
-
-const host = 'http://localhost:8080'
+configDotenv()
 
 export const mapNoteFields = (note: any) => ({
   ...note,
@@ -28,7 +28,7 @@ export async function handleRequest(request: NextRequest, method: string, path: 
     requestOptions.headers['Content-Type'] = 'application/json'
   }
 
-  const response = await fetch(`${host}${path}`, requestOptions);
+  const response = await fetch(`${process.env.HOST_ADDRESS}${path}`, requestOptions);
 
   if (!response.ok) {
     return NextResponse.json(await response.json(), { status: response.status })
