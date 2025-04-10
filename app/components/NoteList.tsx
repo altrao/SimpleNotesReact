@@ -16,6 +16,7 @@ interface NoteListProps {
   onSelectNote: (id: string) => void;
   onDeleteNote: (id: string) => void;
   onAddNote: (ttl?: number) => void;
+  onViewDeleted: () => void;
 }
 
 export function NoteList({
@@ -24,6 +25,7 @@ export function NoteList({
   onSelectNote,
   onDeleteNote,
   onAddNote,
+  onViewDeleted,
 }: NoteListProps) {
   const [showTempNoteModal, setShowTempNoteModal] = useState(false);
 
@@ -37,7 +39,20 @@ export function NoteList({
       <div className="w-full md:w-64 h-full flex flex-col border-r border-border">
       <div className="p-4 flex items-center justify-between">
         <h2 className="text-lg font-medium">Notes</h2>
-        <div className="flex gap-1">
+        <div className="flex gap-0">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onViewDeleted();
+            }}
+            className="h-8 w-11"
+          >
+            <Trash className="h-10 w-10" />
+            <span className="sr-only">View deleted notes</span>
+          </Button>
           <Button
             variant="ghost"
             size="sm"
@@ -48,7 +63,7 @@ export function NoteList({
             }}
             className="h-8 w-11"
           >
-            <Clock className="h-8 w-8" />
+            <Clock className="h-8 w-10" />
             <span className="sr-only">Create temporary note</span>
           </Button>
           <Button
@@ -61,14 +76,14 @@ export function NoteList({
             }}
             className="h-8 w-12"
           >
-            <Plus className="h-8 w-8" />
+            <Plus className="h-8 w-10" />
             <span className="sr-only">Add note</span>
           </Button>
         </div>
       </div>
       <Separator />
 
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-visible">
         {notes.length === 0 ? (
           <div className="p-4 text-center text-muted-foreground">
             No notes yet. Create one to get started.

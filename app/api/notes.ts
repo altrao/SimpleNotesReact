@@ -90,3 +90,11 @@ export const getNoteVersions = async (id: string): Promise<Note[]> => {
 
   return await response.json();
 };
+
+export const getDeletedNotes = async (): Promise<Note[]> => {
+  const response = await handleRequest('/deleted', {
+    method: 'GET'
+  })
+
+  return await response.json()
+}

@@ -1,11 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { Note, createNote, deleteNote, getNoteVersions, getNotes, updateNote } from '../api/notes';
+import { Note, createNote, deleteNote, getDeletedNotes, getNoteVersions, getNotes, updateNote } from '../api/notes';
 import { NoteDetail } from "./NoteDetail";
 import { NoteList } from "./NoteList";
 import { Card } from "./ui/card";
 import { VersionsModal } from './VersionsModal';
+import { ModalType } from "./VersionsModal";
+
 
 interface LocalNote extends Note { }
 
@@ -13,9 +15,21 @@ interface NotesProps {
     authExpired: () => void
 }
 
+const ModalTypes = {
+    Versions: { listTitle: "Notes versions", headerTitle: "Select a version", description: "Select a version to see its content" } as ModalType,
+    Deleted: { listTitle: "Deleted notes", headerTitle: "Select a note", description: "Select a note to see its content" } as ModalType
+}
+
 export function Notes({ authExpired }: NotesProps) {
     const [notes, setNotes] = React.useState<LocalNote[]>([]);
     const [selectedNoteId, setSelectedNoteId] = React.useState<string | null>(null);
+    const [showModal, setShowModal] = React.useState(false);
+    const [modalNotes, setModalNotes] = React.useState<Note[]>([]);
+    const [modalType, setModalType] = React.useState<ModalType>(ModalTypes.Versions)
+
+    const selectedNote = React.useMemo(() => {
+        return notes.find((note) => note.id === selectedNoteId) || null;
+    }, [notes, selectedNoteId]);
 
     const checkAuthExpired = (error: any) => {
         if (error instanceof Error && error.cause === 401) {
@@ -43,10 +57,6 @@ export function Notes({ authExpired }: NotesProps) {
 
         fetchNotes();
     }, []);
-
-    const selectedNote = React.useMemo(() => {
-        return notes.find((note) => note.id === selectedNoteId) || null;
-    }, [notes, selectedNoteId]);
 
     const handleAddNote = async (ttl?: number) => {
         try {
@@ -101,28 +111,39 @@ export function Notes({ authExpired }: NotesProps) {
         }
     };
 
-    const [showVersions, setShowVersions] = React.useState(false);
-    const [versions, setVersions] = React.useState<Note[]>([]);
-
     const handleViewVersions = async (id: string) => {
         try {
             const fetchedVersions = await getNoteVersions(id);
 
-            setVersions(fetchedVersions);
-            setShowVersions(true);
+            setModalType(ModalTypes.Versions)
+            setModalNotes(fetchedVersions);
+            setShowModal(true);
         } catch (error) {
             checkAuthExpired(error)
         }
     };
 
+    const handleViewDeleted = async () => {
+        try {
+            const deletedNotes = await getDeletedNotes()
+
+            setModalType(ModalTypes.Deleted)
+            setModalNotes(deletedNotes)
+            setShowModal(true)
+        } catch (error) {
+            checkAuthExpired(error);
+        }
+    };
+
     return (
-        <Card className="flex h-[600px] overflow-hidden">
+        <Card className="flex h-[600px] w-[900px] overflow-visible">
             <NoteList
                 notes={notes}
                 selectedNoteId={selectedNoteId}
                 onSelectNote={setSelectedNoteId}
                 onDeleteNote={handleDeleteNote}
                 onAddNote={handleAddNote}
+                onViewDeleted={handleViewDeleted}
             />
             <NoteDetail
                 note={selectedNote}
@@ -130,9 +151,10 @@ export function Notes({ authExpired }: NotesProps) {
                 onViewVersions={handleViewVersions}
             />
             <VersionsModal
-                versions={versions}
-                isOpen={showVersions}
-                onClose={() => setShowVersions(false)}
+                type={modalType}
+                versions={modalNotes}
+                isOpen={showModal}
+                onClose={() => setShowModal(false)}
             />
         </Card>
     );

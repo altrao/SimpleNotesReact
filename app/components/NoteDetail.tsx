@@ -116,7 +116,7 @@ export function NoteDetail({ note, onUpdateNote, onViewVersions }: NoteDetailPro
                 </div>
             </div>
 
-            <div className="flex-1 p-4 overflow-auto">
+            <div className="flex-1 p-4 overflow-visible">
                 {isEditing ? (
                     <div className="space-y-2">
                         <Textarea
