@@ -62,10 +62,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onAuthSuccess }) => {
 
   return (
     <div className="grid w-full grow items-center px-4 sm:justify-center">
-      <Card className="w-full sm:w-96">
+      <Card className="w-full" style={{ minWidth: "330px" }}>
         <CardHeader>
           <CardTitle>{isSignUp ? 'Sign Up' : 'Sign In'}</CardTitle>
-          {/* <CardDescription>Enter your credentials to access your account</CardDescription> */}
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="grid gap-y-4">
@@ -84,7 +83,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onAuthSuccess }) => {
                   name="username"
                   value={credentials.username}
                   onChange={handleChange}
-                  className="pl-10"
+                  className="pl-8"
                   placeholder="Enter your email"
                   required
                 />
@@ -101,7 +100,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onAuthSuccess }) => {
                   type="password"
                   value={credentials.password}
                   onChange={handleChange}
-                  className="pl-10"
+                  className="pl-8"
                   placeholder="••••••••"
                   required
                 />
